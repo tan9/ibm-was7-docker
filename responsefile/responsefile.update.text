@@ -1,0 +1,4 @@
+-OPT checkFilePermissions="false"
+-OPT disableNonBlockingPrereqChecking="true"
+-W maintenance.package="/work/update"
+-W product.location="/opt/IBM/WebSphere/AppServer"
