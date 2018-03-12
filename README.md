@@ -49,7 +49,27 @@ A WebSphere 7.0 installation with `AppSrv01` profile will then be created and ex
 Run following command to start container:
 
 ```bash
-docker container run -p 9080:9080 -p 9060:9060 --name was7 websphere:7
+docker container run -p 9060:9060-p 9080:9080 --name was7 websphere:7
 ```
 
-Link <http://localhost:9060/ibm/console/> for admin console, you can then confugre your application server or install applications.
+Link <http://localhost:9060/ibm/console/> for admin console, enter any username and you can then confugre your application server or install applications.
+
+### Accessing WebSphere CLIs
+
+If you need do some configuration using `wsadmin` or some other WebSphere's CLIs, execute following command while container is running:
+
+```bash
+docker container exec -it -e COLUMNS=$COLUMNS -e LINES=$LINES -e TERM=$TERM was7 bash
+```
+
+Or run as `root` user:
+
+```bash
+docker container exec -it -u 0 -e COLUMNS=$COLUMNS -e LINES=$LINES -e TERM=$TERM was7 bash
+```
+
+In the container's shell interpretor, you can access WebSphere Application Server's admin scripts from any directoy, like:
+
+```bash
+wsadmin.sh -lang jython -javaoption "-Dfile.encoding=UTF-8" -f my_admin_script.py
+```
