@@ -16,7 +16,7 @@ RUN groupadd $GROUP \
 
 USER $USER
 
-RUN echo "📦 Unarchiving WebSphere Application Server 7.0 intallation package..." \
+RUN echo "📦 Unarchiving WebSphere Application Server 7.0 installation package..." \
   && mkdir -p /work/was \
   && tar -xzf /work/source/was.7000.wasdev.nocharge.linux.amd64.tar.gz -C /work/was/ \
   && echo "☑ Done."
@@ -49,16 +49,27 @@ LABEL maintainer="Pei-Tang Huang <beta@cht.com.tw>"
 ARG USER=was
 ARG GROUP=was
 
+ARG PROFILE_NAME=AppSrv01
+ARG CELL_NAME=DefaultCell01
+ARG NODE_NAME=DefaultNode01
+ARG HOST_NAME=localhost
+ARG SERVER_NAME=server1
+
+ENV PROFILE_NAME=$PROFILE_NAME \
+  SERVER_NAME=$SERVER_NAME \
+  ADMIN_USER_NAME=$ADMIN_USER_NAME
+
 COPY --from=builder /opt /opt
+COPY script /work/script
 
 # !!! IMPORTANT !!!
-# change default Ubuntu's default shell interpreter from dash to bash
-# or the wsadmin.sh will not run properly
+# change Ubuntu's default shell interpreter from `dash` to `bash`
+# otherwise the wsadmin.sh will not run properly
 RUN yes n | dpkg-reconfigure dash > /dev/null 2>&1
 
 RUN groupadd $GROUP \
   && useradd $USER -g $GROUP -m \
-  && chown -R $USER:$GROUP /opt
+  && chown -R $USER:$GROUP /work /opt
 
 USER $USER
 
@@ -67,15 +78,11 @@ RUN sed -i 's#<action path="actions/createProfileShortCut2StartMenuDefault.ant" 
   /opt/IBM/WebSphere/AppServer/profileTemplates/default/actionRegistry.xml
 
 # create profile
-RUN /opt/IBM/WebSphere/AppServer/bin/manageprofiles.sh \
-  -create \
-  -isDefault \
-  -isDeveloperServer \
-  -omitAction createProfileShortCut2StartMenuDefault
+RUN /work/script/create_profile.sh
 
 ENV PATH /opt/IBM/WebSphere/AppServer/bin:$PATH
 
-EXPOSE 9060 9080
+# exposing SOAP connector port (8880), administrative console port (9060), HTTP transport port (9080)
+EXPOSE 8880 9060 9080
 
-CMD /opt/IBM/WebSphere/AppServer/profiles/AppSrv01/bin/startServer.sh server1 \
-  && tail --retry -f /opt/IBM/WebSphere/AppServer/profiles/AppSrv01/logs/server1/SystemOut.log
+CMD ["/work/script/start_server.sh"]

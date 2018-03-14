@@ -2,6 +2,8 @@
 
 Building an IBM WebSphere Application Server 7.0 for Developers image.
 
+IBM's official [Docker build](https://github.com/WASdev/ci.docker.websphere-traditional) only supports WebSphere Application Server 8.5.5+. However, sometimes you can't really get rid off something for a while.
+
 ## Prerequisites
 
 You have to download WebSphere Application Server v7.0 installation package and updates from IBM as following.
@@ -49,7 +51,7 @@ A WebSphere 7.0 installation with `AppSrv01` profile will then be created and ex
 Run following command to start container:
 
 ```bash
-docker container run -p 9060:9060-p 9080:9080 --name was7 websphere:7
+docker container run -p 8880:8880 -p 9060:9060-p 9080:9080 --name was7 websphere:7
 ```
 
 Link <http://localhost:9060/ibm/console/> for admin console, enter any username and you can then confugre your application server or install applications.

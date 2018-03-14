@@ -12,7 +12,7 @@ SERVER_NAME=${SERVER_NAME:-"server1"}
 
 update_hostname()
 {
-  wsadmin.sh -lang jython -conntype NONE -f /work/updateHostName.py ${NODE_NAME:-"DefaultNode01"} $(hostname)
+  wsadmin.sh -lang jython -conntype NONE -f /work/script/updateHostName.py ${NODE_NAME:-"DefaultNode01"} $(hostname)
   touch /work/hostnameupdated
 }
 
@@ -29,7 +29,7 @@ stop_server()
 }
 
 if [ ! -f "/work/passwordupdated" ]; then
-  /work/modify_password
+  /work/script/modify_password.sh
 fi
 
 if [ "$UPDATE_HOSTNAME" = "true" ] && [ ! -f "/work/hostnameupdated" ]; then
