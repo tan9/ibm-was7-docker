@@ -54,7 +54,7 @@ Run following command to start container:
 docker container run -p 8880:8880 -p 9060:9060 -p 9080:9080 --name was7 websphere:7
 ```
 
-Link <http://localhost:9060/ibm/console/> for admin console, enter any username and you can then confugre your application server or install applications.
+Navigate to <http://localhost:9060/ibm/console/> for the admin console, enter any username and you can then confugre your application server or install applications.
 
 ### Accessing WebSphere CLIs
 
